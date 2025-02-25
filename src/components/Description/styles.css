@@ -1,8 +1,11 @@
-.clicked__image{
-    height: 100vh;
-    width: 30vw;
-}
 
+  
+  .description-container {
+    position: relative;
+    padding: 2rem;
+    color: white;
+  }
+  
 p, h1{
     color: white;
     font-size: 2rem;

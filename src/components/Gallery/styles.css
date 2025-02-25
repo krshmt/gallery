@@ -29,7 +29,7 @@ img {
 .item {
     position: absolute;
     overflow: hidden;
-    max-width:14vw;
+    width:14vw;
 }
 
 .item:nth-child(3){

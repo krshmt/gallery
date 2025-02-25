@@ -56,11 +56,11 @@ function Gallery() {
 
         itemsElements.forEach((item, index) => {
             const pos = positions[index % positions.length];
-            item.style.position = 'absolute'; // S'assurer que l'élément peut être positionné
+            item.style.position = 'absolute';
             item.style.top = pos.top;
             item.style.left = pos.left;
         });
-    }, [items]); // Dépend de items pour s'assurer que le DOM est prêt
+    }, [items]);
 
     // Effet du mouvement de souris
     useEffect(() => {
@@ -91,16 +91,17 @@ function Gallery() {
     // Gère le clic sur une image
     const handleClick = (id: string) => {
         setIsImageClicked(true);
-
+    
         const selectedItem = document.querySelector(`.item[data-id="${id}"]`);
         const otherItems = document.querySelectorAll(`.item:not([data-id="${id}"])`);
-
+    
         const tl = gsap.timeline({
             onComplete: () => {
                 navigate(`/description?id=${encodeURIComponent(id)}`);
             },
         });
-
+    
+        // Cacher les autres images
         tl.to(otherItems, {
             opacity: 0,
             duration: 0.5,
@@ -108,15 +109,36 @@ function Gallery() {
                 otherItems.forEach(item => item.classList.add('hidden'));
             }
         });
-
-        tl.to(selectedItem, {
-            height: '100vh',
-            width: '30vw',
-            x: window.innerWidth / 2 - selectedItem.getBoundingClientRect().left - selectedItem.clientWidth / 2,
-            y: window.innerHeight / 2 - selectedItem.getBoundingClientRect().top - selectedItem.clientHeight / 2,
-            duration: 0.5,
-        });
+    
+        if (selectedItem) {
+            const itemBounds = selectedItem.getBoundingClientRect();
+    
+            // Supprimer les contraintes CSS avant l'animation
+            gsap.set(selectedItem, {
+                position: "fixed",
+                top: itemBounds.top,
+                left: itemBounds.left,
+                width: itemBounds.width,
+                height: itemBounds.height,
+                maxWidth: "none",         // Supprimer max-width
+                overflow: "visible",      // Permettre le débordement pendant l'animation
+            });
+    
+            // Animer la position et la taille
+            tl.to(selectedItem, {
+                top: window.innerHeight / 2 - (window.innerHeight * 0.5) / 2,
+                left: window.innerWidth / 2 - (window.innerWidth * 0.5) / 2,
+                width: "50vw",
+                height: "50vh",
+                duration: 0.5,
+                ease: "power2.out"
+            });
+        }
     };
+    
+    
+    
+    
 
     return (
         <div className="container">
