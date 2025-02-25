@@ -1,11 +1,14 @@
-import Gallery from "./components/Gallery"
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Gallery from './components/Gallery';
 
 function App() {
-  return (
-    <>
-      <Gallery />
-    </>
-  )
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Gallery />} />
+            </Routes>
+        </Router>
+    );
 }
 
-export default App
+export default App;
