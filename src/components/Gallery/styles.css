@@ -1,0 +1,45 @@
+.container{
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.gallery__container{
+    width: 150vw;
+    height: 150vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.gallery {
+    height: 100%;
+    position: relative;
+    padding: 10rem;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item {
+    position: absolute;
+    overflow: hidden;
+    max-width:14vw;
+}
+
+.item:nth-child(3){
+    z-index: 1;
+}
+
+.item:nth-child(6){
+    z-index: 1;
+}
+
+.item:nth-child(8){
+    z-index: 1;
+}
