@@ -1,0 +1,9 @@
+.clicked__image{
+    height: 100vh;
+    width: 30vw;
+}
+
+p, h1{
+    color: white;
+    font-size: 2rem;
+}

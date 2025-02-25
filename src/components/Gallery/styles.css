@@ -43,3 +43,7 @@ img {
 .item:nth-child(8){
     z-index: 1;
 }
+
+.hidden {
+    display: none;
+  }
