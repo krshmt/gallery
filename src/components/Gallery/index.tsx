@@ -120,8 +120,6 @@ function Gallery() {
                 left: itemBounds.left,
                 width: itemBounds.width,
                 height: itemBounds.height,
-                maxWidth: "none",         // Supprimer max-width
-                overflow: "visible",      // Permettre le débordement pendant l'animation
             });
     
             // Animer la position et la taille
