@@ -5,14 +5,14 @@ import { LayoutGroup } from "framer-motion";
 
 function App() {
   return (
-    <Router>
-      <LayoutGroup>
-          <Routes>
-            <Route path="/" element={<Gallery />} />
-            <Route path="/description" element={<Description />} />
-          </Routes>
-      </LayoutGroup>
-    </Router>
+      <Router>
+        <LayoutGroup>
+            <Routes>
+              <Route path="/" element={<Gallery />} />
+              <Route path="/description" element={<Description />} />
+            </Routes>
+        </LayoutGroup>
+      </Router>
   );
 }
 

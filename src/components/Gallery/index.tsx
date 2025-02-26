@@ -101,7 +101,6 @@ function Gallery() {
                                 src={item.image.src}
                                 alt={item.image.title}
                                 className="img"
-                                layoutId={`image-${item.id}`}  // Vérifie l'ID
                             />
                         </Link>
                     );

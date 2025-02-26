@@ -221,7 +221,6 @@ function Description() {
                     ref={previewImageRef}
                     src={selectedImage.src}
                     alt={selectedImage.title}
-                    layoutId={`image-${selectedImage.id}`}
                 />
             )}
             </div>
