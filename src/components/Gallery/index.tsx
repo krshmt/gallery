@@ -11,7 +11,6 @@ function Gallery() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Génère les items une seule fois au montage
     useEffect(() => {
         const generateItems = () => {
             const rows = [
@@ -35,7 +34,6 @@ function Gallery() {
         generateItems();
     }, []);
 
-    // Positionne les images UNE FOIS que les items sont générés et rendus
     useEffect(() => {
         if (items.length === 0) return;
 
@@ -62,7 +60,6 @@ function Gallery() {
         });
     }, [items]);
 
-    // Effet du mouvement de souris
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (location.pathname !== '/' || isImageClicked) return;
@@ -88,54 +85,60 @@ function Gallery() {
         };
     }, [location.pathname, isImageClicked]);
 
-    // Gère le clic sur une image
     const handleClick = (id: string) => {
         setIsImageClicked(true);
     
-        const selectedItem = document.querySelector(`.item[data-id="${id}"]`);
+        const selectedItem = document.querySelector(`.item[data-id="${id}"]`) as HTMLElement;
         const otherItems = document.querySelectorAll(`.item:not([data-id="${id}"])`);
     
-        const tl = gsap.timeline({
-            onComplete: () => {
-                navigate(`/description?id=${encodeURIComponent(id)}`);
-            },
-        });
+        if (!selectedItem) return;
     
-        // Cacher les autres images
-        tl.to(otherItems, {
+        const itemBounds = selectedItem.getBoundingClientRect();
+        
+        // Calcul de la position centrale réelle
+        const centerX = window.innerWidth / 2 - itemBounds.width / 2;
+        const centerY = window.innerHeight / 2 - itemBounds.height / 2;
+    
+        sessionStorage.setItem("imagePosition", JSON.stringify({
+            top: itemBounds.top,
+            left: itemBounds.left,
+            width: itemBounds.width,
+            height: itemBounds.height,
+        }));
+    
+        // Masquer les autres images avec une transition fluide
+        gsap.to(otherItems, {
             opacity: 0,
-            duration: 0.5,
+            duration: 0.3,
             onComplete: () => {
                 otherItems.forEach(item => item.classList.add('hidden'));
             }
         });
     
-        if (selectedItem) {
-            const itemBounds = selectedItem.getBoundingClientRect();
+        // Placer l'image à sa position initiale (celle de la galerie)
+        gsap.set(selectedItem, {
+            position: "fixed",
+            top: itemBounds.top,
+            left: itemBounds.left,
+            width: itemBounds.width,
+            height: itemBounds.height,
+            zIndex: 1000,
+        });
     
-            // Supprimer les contraintes CSS avant l'animation
-            gsap.set(selectedItem, {
-                position: "fixed",
-                top: itemBounds.top,
-                left: itemBounds.left,
-                width: itemBounds.width,
-                height: itemBounds.height,
-            });
-    
-            // Animer la position et la taille
-            tl.to(selectedItem, {
-                top: window.innerHeight / 2 - (window.innerHeight * 0.5) / 2,
-                left: window.innerWidth / 2 - (window.innerWidth * 0.5) / 2,
-                width: "50vw",
-                height: "50vh",
-                duration: 0.5,
-                ease: "power2.out"
-            });
-        }
+        // Animation fluide vers le centre de l'écran
+        gsap.to(selectedItem, {
+            top: centerY,
+            left: centerX,
+            width: "50vw",
+            height: "50vh",
+            duration: 0.6,
+            ease: "power2.out",
+            onComplete: () => {
+                navigate(`/description?id=${encodeURIComponent(id)}`);
+            }
+        });
     };
-    
-    
-    
+  
     
 
     return (
