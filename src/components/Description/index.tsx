@@ -1,115 +1,37 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import images from '../../data/images';
+import imageVoirPlus from '../../data/imageDetail';
 import './styles.css';
 
 function Description() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const navigate = useNavigate();
     const location = useLocation();
-    const imageId = new URLSearchParams(location.search).get('id');
-    const image = images.find((img) => img.id === imageId);
+    const [selectedImage, setSelectedImage] = useState<any>(null);
+    const [associatedImages, setAssociatedImages] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!imageId || !image) return;
-    
-        const imageData = sessionStorage.getItem("imagePosition");
-        const imgElement = document.querySelector(".clicked__image") as HTMLImageElement;
-        
-        // Vérifier si c'est l'image qui a déjà été animée dans la galerie
-        const isSameImage = document.querySelector(".selected-item");
-    
-        if (imageData && imgElement) {
-            const { top, left, width, height } = JSON.parse(imageData);
-    
-            if (isSameImage) {
-                // Si l'image était déjà animée, on la repositionne immédiatement sans animation
-                gsap.set(imgElement, {
-                    position: "fixed",
-                    top,
-                    left,
-                    width,
-                    height,
-                    zIndex: 1000,
-                });
-    
-                return; // Éviter de relancer l'animation
-            }
-    
-            // Animation uniquement si l'image est nouvelle
-            gsap.set(imgElement, {
-                position: "fixed",
-                top,
-                left,
-                width,
-                height,
-                zIndex: 1000,
-            });
-    
-            gsap.to(imgElement, {
-                top: "50%",
-                left: "50%",
-                width: "50vw",
-                height: "50vh",
-                xPercent: -50,
-                yPercent: -50,
-                duration: 0.6,
-                ease: "power2.out",
-                onComplete: () => {
-                    gsap.set(imgElement, {
-                        position: "relative",
-                        top: "auto",
-                        left: "auto",
-                        transform: "none",
-                    });
+        const imageId = new URLSearchParams(location.search).get('id');
+        if (imageId) {
+            const imageDetail = images.find((img) => img.id === imageId);
+            const associatedImageDetail = imageVoirPlus.find((img) => img.id === imageId);
+            if (imageDetail) {
+                setSelectedImage(imageDetail);
+                if (associatedImageDetail) {
+                    setAssociatedImages([associatedImageDetail.src_1, associatedImageDetail.src_2, associatedImageDetail.src_3]);
                 }
-            });
+            }
         }
-    }, [imageId, image]); 
-  
-    const handleBack = () => {
-        const imgElement = document.querySelector(".clicked__image") as HTMLImageElement;
-        const imageData = sessionStorage.getItem("imagePosition");
-    
-        if (imgElement && imageData) {
-            const { top, left, width, height } = JSON.parse(imageData);
-    
-            gsap.to(imgElement, {
-                top,
-                left,
-                width,
-                height,
-                xPercent: 0,
-                yPercent: 0,
-                duration: 0.6,
-                ease: "power2.in",
-                onComplete: () => navigate('/'),
-            });
-        } else {
-            navigate('/');
-        }
-    };
-    
+    }, [location]);
 
-    if (!image) return (
-        <div ref={containerRef} className="description-container">
-            <h1>Image not found</h1>
-            <button onClick={() => navigate('/')}>Go back to Gallery</button>
-        </div>
-    );
+    if (!selectedImage) return <div className="description-container"><h1>Image not found</h1></div>;
 
     return (
-        <div ref={containerRef} className="description-container">
-            <button onClick={handleBack}>Back</button>
-            <h1>{image.title}</h1>
-            <p>{image.description}</p>
-            <div className="image-wrapper">
-                <img className="clicked__image" src={image.src} alt={image.title} />
+        <div className="description-container">
+            <div className="img-preview">
+                <img src={selectedImage.src} alt={selectedImage.title} />
             </div>
         </div>
     );
-    
 }
 
-export default Description;
+export default Description; 

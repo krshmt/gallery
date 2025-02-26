@@ -1,15 +1,12 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import images from "../../data/images";
-import { gsap } from "gsap";
 import "./styles.css";
 
 function Gallery() {
     const galleryRef = useRef<HTMLDivElement>(null);
     const [items, setItems] = useState<any[]>([]);
     const [isImageClicked, setIsImageClicked] = useState(false);
-    const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
         const generateItems = () => {
@@ -37,24 +34,24 @@ function Gallery() {
     useEffect(() => {
         if (items.length === 0) return;
 
-        const itemsElements = document.querySelectorAll('.item');
+        const itemsElements = document.querySelectorAll(".item");
         const positions = [
-            { top: '25%', left: '10%' },
-            { top: '20%', left: '25%' },
-            { top: '40%', left: '40%' },
-            { top: '40%', left: '80%' },
-            { top: '65%', left: '25%' },
-            { top: '0%', left: '40%' },
-            { top: '30%', left: '55%' },
-            { top: '60%', left: '60%' },
-            { top: '10%', left: '70%' },
-            { top: '0%', left: '100%' },
-            { top: '20%', left: '30%' },
+            { top: "25%", left: "10%" },
+            { top: "20%", left: "25%" },
+            { top: "40%", left: "40%" },
+            { top: "40%", left: "80%" },
+            { top: "65%", left: "25%" },
+            { top: "0%", left: "40%" },
+            { top: "30%", left: "55%" },
+            { top: "60%", left: "60%" },
+            { top: "10%", left: "70%" },
+            { top: "0%", left: "100%" },
+            { top: "20%", left: "30%" },
         ];
 
         itemsElements.forEach((item, index) => {
             const pos = positions[index % positions.length];
-            item.style.position = 'absolute';
+            item.style.position = "absolute";
             item.style.top = pos.top;
             item.style.left = pos.left;
         });
@@ -62,7 +59,7 @@ function Gallery() {
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
-            if (location.pathname !== '/' || isImageClicked) return;
+            if (isImageClicked) return;
             const { clientX, clientY, currentTarget } = e;
             const { width, height } = (currentTarget as HTMLElement).getBoundingClientRect();
             const centerX = width / 2;
@@ -77,80 +74,30 @@ function Gallery() {
             }
         };
 
-        const container = document.querySelector('.container');
-        container?.addEventListener('mousemove', handleMouseMove);
+        const container = document.querySelector(".container");
+        container?.addEventListener("mousemove", handleMouseMove);
 
         return () => {
-            container?.removeEventListener('mousemove', handleMouseMove);
+            container?.removeEventListener("mousemove", handleMouseMove);
         };
-    }, [location.pathname, isImageClicked]);
-
-    const handleClick = (id: string) => {
-        setIsImageClicked(true);
-    
-        const selectedItem = document.querySelector(`.item[data-id="${id}"]`) as HTMLElement;
-        const otherItems = document.querySelectorAll(`.item:not([data-id="${id}"])`);
-    
-        if (!selectedItem) return;
-    
-        const itemBounds = selectedItem.getBoundingClientRect();
-        
-        // Calcul de la position centrale réelle
-        const centerX = window.innerWidth / 2 - itemBounds.width / 2;
-        const centerY = window.innerHeight / 2 - itemBounds.height / 2;
-    
-        sessionStorage.setItem("imagePosition", JSON.stringify({
-            top: itemBounds.top,
-            left: itemBounds.left,
-            width: itemBounds.width,
-            height: itemBounds.height,
-        }));
-    
-        // Masquer les autres images avec une transition fluide
-        gsap.to(otherItems, {
-            opacity: 0,
-            duration: 0.3,
-            onComplete: () => {
-                otherItems.forEach(item => item.classList.add('hidden'));
-            }
-        });
-    
-        // Placer l'image à sa position initiale (celle de la galerie)
-        gsap.set(selectedItem, {
-            position: "fixed",
-            top: itemBounds.top,
-            left: itemBounds.left,
-            width: itemBounds.width,
-            height: itemBounds.height,
-            zIndex: 1000,
-        });
-    
-        // Animation fluide vers le centre de l'écran
-        gsap.to(selectedItem, {
-            top: centerY,
-            left: centerX,
-            width: "50vw",
-            height: "50vh",
-            duration: 0.6,
-            ease: "power2.out",
-            onComplete: () => {
-                navigate(`/description?id=${encodeURIComponent(id)}`);
-            }
-        });
-    };
-  
-    
+    }, [isImageClicked]);
 
     return (
         <div className="container">
             <div className="gallery__container" ref={galleryRef}>
                 <div className="gallery">
                     {items.map((item) => (
-                        <div key={item.id} className="item" data-id={item.id} onClick={() => handleClick(item.id)}>
+                        <Link
+                            key={item.id}
+                            to={`/description?id=${encodeURIComponent(item.id)}`}
+                            className="item"
+                            data-id={item.id}
+                            onClick={() => setIsImageClicked(true)}
+                        >
                             <div className="preview-img">
                                 <img src={item.image.src} alt={item.image.title} />
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
