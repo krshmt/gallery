@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import images from "../../data/images";
+import { motion } from "framer-motion";
 import "./styles.css";
 
 function Gallery() {
@@ -86,7 +87,9 @@ function Gallery() {
         <div className="container">
             <div className="gallery__container" ref={galleryRef}>
                 <div className="gallery">
-                    {items.map((item) => (
+                {items.map((item) => {
+                    console.log("Gallery layoutId: ", `image-${item.id}`);  // Affiche l'ID dans la console
+                    return (
                         <Link
                             key={item.id}
                             to={`/description?id=${encodeURIComponent(item.id)}`}
@@ -94,11 +97,15 @@ function Gallery() {
                             data-id={item.id}
                             onClick={() => setIsImageClicked(true)}
                         >
-                            <div className="preview-img">
-                                <img src={item.image.src} alt={item.image.title} />
-                            </div>
+                            <motion.img
+                                src={item.image.src}
+                                alt={item.image.title}
+                                className="img"
+                                layoutId={`image-${item.id}`}  // Vérifie l'ID
+                            />
                         </Link>
-                    ))}
+                    );
+                })}
                 </div>
             </div>
         </div>

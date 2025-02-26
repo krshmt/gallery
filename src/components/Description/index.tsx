@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import images from '../../data/images';
 import imageVoirPlus from '../../data/imageDetail';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import './styles.css';
 
 function Description() {
@@ -25,7 +27,7 @@ function Description() {
     let targetTranslate = 0;
     let isClickMove = false;
     let currentImageIndex = 0;
-    const activeItemOpacity = 0.3;
+    const activeItemOpacity = 0.3;    
 
     useEffect(() => {
         const imageId = new URLSearchParams(location.search).get('id');
@@ -210,15 +212,30 @@ function Description() {
 
     return (
         <div className="description-container" ref={containerRef}>
+            <div className="back">
+                <Link to="/">Back</Link>
+            </div>
             <div className="img-preview-description">
-                <img ref={previewImageRef} src={selectedImage?.src} alt={selectedImage?.title} />
+            {selectedImage && (
+                <motion.img
+                    ref={previewImageRef}
+                    src={selectedImage.src}
+                    alt={selectedImage.title}
+                    layoutId={`image-${selectedImage.id}`}
+                />
+            )}
             </div>
 
             <div className="minimap">
                 <div className="indicator" ref={indicatorRef}></div>
                 <div className="description-items" ref={itemsRef}>
+                    {selectedImage && (
+                        <div className="description-item" onClick={() => handleItemClick(0)}>
+                            <img src={selectedImage.src} alt={selectedImage.title} />
+                        </div>
+                    )}
                     {associatedImages.map((src, index) => (
-                        <div key={index} className="description-item" onClick={() => handleItemClick(index)}>
+                        <div key={index} className="description-item" onClick={() => handleItemClick(index + 1)}>
                             <img src={src} alt={`Associated image ${index + 1}`} />
                         </div>
                     ))}
