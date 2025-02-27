@@ -29,7 +29,7 @@ function Gallery() {
       setLoading(true);
       setTimeout(() => {
         setLoading(false);
-        //sessionStorage.setItem("hasVisitedGallery", "true");
+        sessionStorage.setItem("hasVisitedGallery", "true");
       }, 5000);
     } else {
       setLoading(false);
