@@ -28,7 +28,7 @@ function Description() {
     let targetTranslate = 0;
     let isClickMove = false;
     let currentImageIndex = 0;
-    const activeItemOpacity = 0.3;    
+    const activeItemOpacity = 0.5;    
 
     useEffect(() => {
         const imageId = new URLSearchParams(location.search).get('id');
