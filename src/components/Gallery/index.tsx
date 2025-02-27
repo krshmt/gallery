@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import images from "../../data/images";
-import { motion } from "framer-motion";
+import { delay, easeIn, motion } from "framer-motion";
 import "./styles.css";
 
 function Gallery() {
@@ -138,10 +138,15 @@ function Gallery() {
                 className="gallery__container"
                 ref={galleryRef}
             >
-                <motion.div className="gallery"
-                initial={{ scale: 0.2, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 1, ease: [0, 0, 0, 1], delay: 0.7 }}>
+                <motion.div
+                    className="gallery"
+                    initial={{ scale: 0.2, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{
+                        scale: { duration: 1, ease: [0, 0, 0, 1] },
+                        opacity: { duration: 1, ease: 'easeIn'},
+                    }}
+                >
                     {items.map((item) => {
                         return (
                             <Link
