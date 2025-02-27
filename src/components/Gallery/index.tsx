@@ -1,4 +1,4 @@
-// @ts-nocheck
+// ts-nocheck
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import images from "../../data/images";
@@ -131,17 +131,17 @@ function Gallery() {
     };
 
     return (
-        <motion.div
+        <div
             className="container"
-            initial={{ scale: 0.2, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1, ease: [0, 0, 0, 1], delay: 0.7 }}
         >
             <div
                 className="gallery__container"
                 ref={galleryRef}
             >
-                <div className="gallery">
+                <motion.div className="gallery"
+                initial={{ scale: 0.2, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 1, ease: [0, 0, 0, 1], delay: 0.7 }}>
                     {items.map((item) => {
                         return (
                             <Link
@@ -151,21 +151,18 @@ function Gallery() {
                                 data-id={item.id}
                                 onClick={(e) => handleClick(item.id, e)}
                             >
-                                <motion.img
+                                <img
                                     src={item.image.src}
                                     alt={item.image.title}
                                     className="img"
                                     draggable={false}
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 1 }}
-                                    transition={{ duration: 0.5 }}
                                 />
                             </Link>
                         );
                     })}
-                </div>
+                </motion.div>
             </div>
-        </motion.div>
+        </div>
     );
 }
 
