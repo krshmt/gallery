@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import images from '../../data/images';
 import imageVoirPlus from '../../data/imageDetail';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
 import './styles.css';
 
 function Description() {
@@ -210,14 +211,68 @@ function Description() {
         requestAnimationFrame(animate);
     }
 
+    useEffect(() => {
+        gsap.fromTo(
+            ".img-preview-description img",
+            { y: "100vh" },
+            { y: 0, duration: 1, ease: "power3.out" }
+        );
+    
+        const items = document.querySelectorAll(".description-item");
+        items.forEach((item, index) => {
+            gsap.fromTo(
+                item,
+                { x: index % 2 === 0 ? "2vw" : "-2vw", y: "-5vh", opacity: 0, scale: 0.5 },
+                { x: 0, y: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out", delay: index * 0.2 }
+            );
+        });
+    
+        console.log(items.length);
+    
+        gsap.to(".indicator", {
+            opacity: 1,
+            duration: 0.5,
+            delay: items.length
+        });
+    }, [associatedImages]);
+
+    const navigate = useNavigate();
+
+    const handleBackClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.preventDefault();
+
+        // Déclencher les animations de sortie
+        gsap.to(".img-preview-description img", {
+            scale: 0.5,
+            opacity: 0,
+            duration: 0.5,
+            ease: "power3.in",
+            onComplete: () => {
+                navigate("/");
+            }
+        });
+
+        gsap.to(".description-items", {
+            x: "20vw",
+            duration: 0.5,
+            ease: "power3.in"
+        });
+
+        gsap.to(".indicator", {
+            x: "20vw",
+            duration: 0.5,
+            ease: "power3.in"
+        });
+    };
+
     return (
         <div className="description-container" ref={containerRef}>
             <div className="back">
-                <Link to="/">Back</Link>
+                <Link to="/" onClick={handleBackClick}>Back</Link>
             </div>
             <div className="img-preview-description">
             {selectedImage && (
-                <motion.img
+                <img
                     ref={previewImageRef}
                     src={selectedImage.src}
                     alt={selectedImage.title}
