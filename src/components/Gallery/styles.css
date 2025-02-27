@@ -12,6 +12,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .gallery {
@@ -28,5 +30,20 @@
 .item {
     position: absolute;
     overflow: hidden;
-    width:14vw;
+    width: 14vw;
+}
+
+.item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: rgb(17, 17, 17);
+    transition: height 0.8s ease-in-out;
+}
+
+.item.active::after {
+    height: 100%;
 }
