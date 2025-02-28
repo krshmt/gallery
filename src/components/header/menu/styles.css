@@ -1,5 +1,5 @@
 .menu-bar,
-.menu-overlay {
+.menu-overlay-bar {
     position: fixed;
     top: 0;
     left: 0;
@@ -16,8 +16,11 @@
     cursor: pointer;
 }
 
+.white{
+    color: white !important;
+}
+
 .menu-close p{
-    color: #000;
     cursor: pointer;
 }
 
@@ -28,7 +31,7 @@
     width: 100vw;
     height: 100vh;
     padding: 2em;
-    background: rgb(170, 255, 59);
+    background: var(--background-color-nav);
     z-index: 2;    
     display: flex;
     clip-path: polygon(0 0, 100% 0, 100% 0%, 0 0%);
@@ -43,10 +46,10 @@
 
 .menu-copy{
     flex: 4;
+    margin-top: 10rem;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-top: 2em;
+    justify-content: center;
+    gap: 50%;
 }
 
 .menu-preview{
@@ -54,4 +57,32 @@
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
+}
+
+.menu-link-item{
+    width: max-content;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    margin-bottom: 2em;
+}
+
+.menu-link-item-holder{
+    position: relative;
+}
+
+.menu-link-item-holder p{
+    color: #000;
+    font-size: 2.6rem
+}
+
+.menu-info{
+    display: flex;
+}
+
+.menu-info-col{
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-info-col > a{
+    font-size: 1.1rem;
 }

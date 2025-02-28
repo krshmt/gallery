@@ -8,6 +8,7 @@
 :root{
   --background-color: rgb(255, 255, 255);
   --text-color: rgb(0, 0, 0);
+  --background-color-nav: #212121;
 }
 
 html{
