@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import gsap from "gsap";
 import "./styles.css";
-import { g } from "framer-motion/client";
 
 function Loader() {
   useEffect(() => {

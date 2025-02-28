@@ -4,6 +4,7 @@ import Description from "./components/Description";
 import { AnimatePresence } from "framer-motion";
 import Lenis from 'lenis';
 import { useEffect } from "react";
+import Menu from "./components/header/menu";
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
 
   return (
     <Router>
+      <Menu />
       <AnimatePresence>
         <Routes>
           <Route path="/" element={<Gallery />} />

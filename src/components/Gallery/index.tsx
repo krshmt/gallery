@@ -5,6 +5,7 @@ import images from "../../data/images";
 import { motion } from "framer-motion";
 import Loader from "../Loader";
 import "./styles.css";
+import { del } from "framer-motion/client";
 
 function Gallery() {
   const [items, setItems] = useState<any[]>([]);
@@ -29,7 +30,7 @@ function Gallery() {
       setLoading(true);
       setTimeout(() => {
         setLoading(false);
-        //sessionStorage.setItem("hasVisitedGallery", "true");
+        sessionStorage.setItem("hasVisitedGallery", "true");
       }, 5000);
     } else {
       setLoading(false);
@@ -162,8 +163,8 @@ function Gallery() {
             initial={{ scale: 0.2, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{
-              scale: { duration: 1, ease: [0, 0, 0, 1] },
-              opacity: { duration: 1, ease: "easeIn" },
+              scale: { duration: 1, ease: [0, 0, 0, 1]},
+              opacity: { duration: 1, ease: "easeIn"},
             }}
           >
             {items.map((item) => (
