@@ -101,7 +101,7 @@ function Menu() {
         <div className="menu-container" ref={container}>
             <div className="menu-bar">
                 <div className="menu-logo">
-                    <p onClick={handleLogoClick}> GALLERY</p>
+                    <p className='title' onClick={handleLogoClick}> GALLERY </p>
                 </div>
                 <div className="menu-open" onClick={toggleMenu}>
                     <p>MENU</p>
@@ -110,7 +110,7 @@ function Menu() {
             <div className="menu-overlay">
                 <div className="menu-overlay-bar">
                     <div className="menu-logo">
-                        <p onClick={handleLogoClick} className='white'>GALLERY</p>
+                        <p onClick={handleLogoClick} className='white title'>GALLERY</p>
                     </div>
                     <div className="menu-close" onClick={toggleMenu}>
                         <p className='white'>CLOSE</p>

@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import images from '../../data/images';
 import imageVoirPlus from '../../data/imageDetail';
+import Information from './Information';
 import { Link, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import './styles.css';
@@ -264,6 +265,12 @@ function Description() {
         });
     };
 
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
+
+    const toggleInfo = () => {
+        setIsInfoOpen(!isInfoOpen);
+    };
+
     return (
         <div className="description-container" ref={containerRef}>
             <div className="img-preview-description">
@@ -291,6 +298,19 @@ function Description() {
                     ))}
                 </div>
             </div>
+            <button className="info-button" onClick={toggleInfo}>
+                {isInfoOpen ? 'Fermer' : 'Informations'}
+            </button>
+
+            {selectedImage && (
+                <Information
+                    isOpen={isInfoOpen}
+                    onClose={toggleInfo}
+                    description_1={selectedImage.description_1}
+                    description_2={selectedImage.description_2}
+                    title={selectedImage.title}
+                />
+            )}
         </div>
     );
 }
