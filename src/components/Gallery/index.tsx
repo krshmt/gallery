@@ -163,8 +163,8 @@ function Gallery() {
             initial={{ scale: 0.2, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{
-              scale: { duration: 1, ease: [0, 0, 0, 1], delay: 0.5 },
-              opacity: { duration: 1, ease: "easeIn", delay: 0.5 },
+              scale: { duration: 1, ease: [0, 0, 0, 1]},
+              opacity: { duration: 1, ease: "easeIn"},
             }}
           >
             {items.map((item) => (

@@ -34,7 +34,7 @@ function Menu() {
 
         setTimeout(() => {
             navigate(path);
-        }, 1000);
+        }, 700);
     };
 
 
@@ -45,7 +45,7 @@ function Menu() {
             tl.current = gsap
                 .timeline({ paused: true })
                 .to(".menu-overlay", {
-                    duration: 1.25,
+                    duration: 1,
                     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
                     ease: "power4.inOut"
                 })
@@ -68,11 +68,40 @@ function Menu() {
         }
     }, [isOpen]);
 
+    const handleLogoClick = () => {
+        if (location.pathname === "/description") {
+            gsap.to(".img-preview-description img", {
+                scale: 0.5,
+                opacity: 0,
+                duration: 0.5,
+                ease: "power3.in",
+                onComplete: () => {
+                    navigate("/");
+                }
+            });
+    
+            gsap.to(".description-items", {
+                x: "20vw",
+                duration: 0.5,
+                ease: "power3.in"
+            });
+    
+            gsap.to(".indicator", {
+                x: "20vw",
+                duration: 0.5,
+                ease: "power3.in"
+            });
+        } else {
+            handleNavigation("/");
+        }
+    };
+
+
     return (
         <div className="menu-container" ref={container}>
             <div className="menu-bar">
                 <div className="menu-logo">
-                    <p onClick={() => handleNavigation("/")}> GALLERY</p>
+                    <p onClick={handleLogoClick}> GALLERY</p>
                 </div>
                 <div className="menu-open" onClick={toggleMenu}>
                     <p>MENU</p>
@@ -81,7 +110,7 @@ function Menu() {
             <div className="menu-overlay">
                 <div className="menu-overlay-bar">
                     <div className="menu-logo">
-                        <p onClick={() => handleNavigation("/")} className='white' to="/">GALLERY</p>
+                        <p onClick={handleLogoClick} className='white'>GALLERY</p>
                     </div>
                     <div className="menu-close" onClick={toggleMenu}>
                         <p className='white'>CLOSE</p>

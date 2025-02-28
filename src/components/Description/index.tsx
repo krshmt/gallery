@@ -241,7 +241,6 @@ function Description() {
     const handleBackClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         e.preventDefault();
 
-        // Déclencher les animations de sortie
         gsap.to(".img-preview-description img", {
             scale: 0.5,
             opacity: 0,
@@ -267,9 +266,6 @@ function Description() {
 
     return (
         <div className="description-container" ref={containerRef}>
-            <div className="back">
-                <Link to="/" onClick={handleBackClick}>Back</Link>
-            </div>
             <div className="img-preview-description">
             {selectedImage && (
                 <img
