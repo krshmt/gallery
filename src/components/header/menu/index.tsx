@@ -91,6 +91,12 @@ function Menu() {
                 duration: 0.5,
                 ease: "power3.in"
             });
+
+            gsap.to(".info-button", {
+                y: "10vh",
+                duration: 0.5,
+                ease: "power3.in"
+            });
         } 
         if (location.pathname === "/about") {
             gsap.to(".container-about", {
