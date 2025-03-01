@@ -43,6 +43,6 @@
     z-index: 10;
 }
 
-.title_information{
+.title_information, .information-content{
     color: black;
 }

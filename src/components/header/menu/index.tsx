@@ -91,7 +91,18 @@ function Menu() {
                 duration: 0.5,
                 ease: "power3.in"
             });
-        } else {
+        } 
+        if (location.pathname === "/about") {
+            gsap.to(".container-about", {
+                opacity: 0,
+                duration: 0.5,
+                ease: "power3.in",
+                onComplete: () => {
+                    navigate("/");
+                }
+            });
+        }        
+        else {
             handleNavigation("/");
         }
     };
@@ -103,7 +114,7 @@ function Menu() {
                 <div className="menu-logo">
                     <p className='title' onClick={handleLogoClick}> GALLERY </p>
                 </div>
-                <div className="menu-open" onClick={toggleMenu}>
+                <div className="menu-open menu-header" onClick={toggleMenu}>
                     <p>MENU</p>
                 </div>
             </div>

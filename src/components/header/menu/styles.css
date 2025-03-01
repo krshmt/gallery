@@ -15,7 +15,6 @@
 }
 
 .menu-bar a, .menu-open p{
-    color: #000;
     cursor: pointer;
 }
 
@@ -35,7 +34,7 @@
     height: 100vh;
     padding: 2em;
     background: var(--background-color-nav);
-    z-index: 4;    
+    z-index: 11;    
     display: flex;
     clip-path: polygon(0 0, 100% 0, 100% 0%, 0 0%);
 }
@@ -92,4 +91,13 @@
 
 .title{
     cursor: pointer;
+}
+
+.menu-header > p, .title{
+    font-size: 1.2rem;
+    transition: letter-spacing 0.3s ease;
+}
+
+.menu-header > p:hover, .title:hover{
+    letter-spacing: .2rem;
 }
