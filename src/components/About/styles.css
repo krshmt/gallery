@@ -27,14 +27,50 @@
 .parallax-image {
     position: absolute;
     z-index: -1;
-    left: 70%;
-    top: 170%;
-    width: 300px; /* Adjust the size as needed */
+    left: 60%;
+    top: 120%;
+    width: 20vw;
 }
 
-.parallax-image-2 {
-    position: absolute;
-    left: 70%;
-    top: 110%;
-    width: 300px; /* Adjust the size as needed */
+@media (max-width:1560px) {
+    .word-mask{
+        font-size: 3rem;
+    }
+    .container-about{
+        margin: 15rem 25vw;
+    }
+}
+
+@media (max-width:1100px) {
+    .word-mask{
+        font-size: 2rem;
+        padding-bottom: 1rem;
+    }
+    .container-about{
+        margin: 15rem 25vw;
+    }
+}
+
+@media (max-width:650px) {
+    .word-mask{
+        font-size: 1.5rem;
+    }
+    .parallax-image {
+        position: absolute;
+        z-index: -1;
+        left: 55%;
+        top: 120%;
+        width: 30vw;
+    }
+}
+
+@media (max-width:400px) {
+    .word-mask{
+        font-size: 1.2rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .parallax-image{
+        display: none;
+    }
 }
