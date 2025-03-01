@@ -228,13 +228,17 @@ function Description() {
             );
         });
     
-        console.log(items.length);
-    
-        gsap.to(".indicator", {
-            opacity: 1,
-            duration: 0.5,
-            delay: items.length
-        });
+        gsap.fromTo(
+            ".indicator", 
+            { opacity: 0 },
+            { opacity: 1, duration: 0.5, delay: items.length}
+        );
+
+        gsap.fromTo(
+            ".info-button",
+            { y: "10vh" },
+            { y: 0, duration: 0.5, ease: "power3.out" }
+        );
     }, [associatedImages]);
 
     const navigate = useNavigate();

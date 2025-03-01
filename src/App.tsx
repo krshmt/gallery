@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
+import Lenis from 'lenis';
 import Gallery from "./components/Gallery";
 import Description from "./components/Description";
-import { AnimatePresence } from "framer-motion";
-import Lenis from 'lenis';
-import { useEffect } from "react";
 import Menu from "./components/header/menu";
+import About from "./components/About";
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Gallery />} />
           <Route path="/description" element={<Description />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </AnimatePresence>
     </Router>
