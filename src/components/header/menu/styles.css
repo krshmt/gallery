@@ -101,3 +101,21 @@
 .menu-header > p:hover, .title:hover{
     letter-spacing: .2rem;
 }
+
+@media (max-width:860px) {
+    .menu-copy{
+        gap: 25%;
+    }
+}
+
+@media (max-width:600px) {
+    .menu-copy{
+        gap: 10%;
+    }
+}
+
+@media (max-width:500px) {
+    .menu-copy{
+        flex-direction: column;
+    }
+}
