@@ -48,3 +48,7 @@ export default tseslint.config({
   },
 })
 ```
+
+### Fix à faire :
+
+- Information to description : click on minimap not working.
