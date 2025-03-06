@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import images from '../../data/images';
 import imageVoirPlus from '../../data/imageDetail';
@@ -22,15 +22,25 @@ function Description() {
     const itemsRef = useRef<HTMLDivElement>(null);
     const indicatorRef = useRef<HTMLDivElement>(null);
     const previewImageRef = useRef<HTMLImageElement>(null);
+    const animationRef = useRef<number>(null);
 
-    let isHorizontal = window.innerWidth <= 900;
-    let maxTranslate = dimensions.containerSize - dimensions.indicatorSize;
-    let currentTranslate = 0;
-    let targetTranslate = 0;
-    let isClickMove = false;
-    let currentImageIndex = 0;
-    const activeItemOpacity = 0.5;    
+    const [isHorizontal, setIsHorizontal] = useState(window.innerWidth <= 900);
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
+    
+    // Utiliser useRef pour les variables qui doivent persister entre les rendus
+    const maxTranslateRef = useRef(0);
+    const currentTranslateRef = useRef(0);
+    const targetTranslateRef = useRef(0);
+    const isClickMoveRef = useRef(false);
+    const currentImageIndexRef = useRef(0);
+    const activeItemOpacity = 0.5;
 
+    // Mettre à jour maxTranslate quand dimensions change
+    useEffect(() => {
+        maxTranslateRef.current = dimensions.containerSize - dimensions.indicatorSize;
+    }, [dimensions]);
+
+    // Chargement initial des images
     useEffect(() => {
         const imageId = new URLSearchParams(location.search).get('id');
         if (imageId) {
@@ -45,18 +55,21 @@ function Description() {
         }
     }, [location]);
 
+    // Mise à jour des dimensions
     useEffect(() => {
         const updateDimensions = () => {
+            const isCurrentHorizontal = window.innerWidth <= 900;
+            setIsHorizontal(isCurrentHorizontal);
+            
             const itemElements = document.querySelectorAll('.description-item');
             if (itemElements.length > 0) {
-                const isHorizontal = window.innerWidth <= 900;
                 let newDimensions = {
                     itemSize: 0,
                     containerSize: 0,
                     indicatorSize: 0,
                 };
 
-                if (isHorizontal) {
+                if (isCurrentHorizontal) {
                     newDimensions = {
                         itemSize: itemElements[0].getBoundingClientRect().width,
                         containerSize: itemsRef.current?.scrollWidth || 0,
@@ -81,49 +94,61 @@ function Description() {
         };
     }, [associatedImages]);
 
+    // Configuration initiale après dimensions mises à jour
     useEffect(() => {
         const itemElements = document.querySelectorAll('.description-item img');
         if (itemElements.length > 0) {
             itemElements[0].style.opacity = activeItemOpacity.toString();
             updatePreviewImage(0);
-            animate();
+            
+            // Démarrer l'animation
+            if (!animationRef.current) {
+                animate();
+            }
         }
     }, [dimensions]);
 
+    // Gestionnaires d'événements pour wheel/touch
     useEffect(() => {
         const container = containerRef.current;
-        const handleWheel = (e: WheelEvent) => {
+        if (!container) return;
+        
+        const handleWheel = (e) => {
+            if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
+            
             e.preventDefault();
-            isClickMove = false;
+            isClickMoveRef.current = false;
 
             const delta = e.deltaY;
             const scrollVelocity = Math.min(Math.max(delta * 0.5, -20), 20);
 
-            targetTranslate = Math.min(
-                Math.max(targetTranslate - scrollVelocity, -maxTranslate),
+            targetTranslateRef.current = Math.min(
+                Math.max(targetTranslateRef.current - scrollVelocity, -maxTranslateRef.current),
                 0
             );
         };
 
-        container?.addEventListener("wheel", handleWheel, { passive: false });
-
         let touchStartY = 0;
-        const handleTouchStart = (e: TouchEvent) => {
+        
+        const handleTouchStart = (e) => {
+            if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
+            
             if (isHorizontal) {
                 touchStartY = e.touches[0].clientY;
             }
         };
 
-        const handleTouchMove = (e: TouchEvent) => {
+        const handleTouchMove = (e) => {
+            if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
+            
             if (isHorizontal) {
                 const touchY = e.touches[0].clientY;
                 const deltaY = touchStartY - touchY;
 
-                const delta = deltaY;
-                const scrollVelocity = Math.min(Math.max(delta * 0.5, -20), 20);
+                const scrollVelocity = Math.min(Math.max(deltaY * 0.5, -20), 20);
 
-                targetTranslate = Math.min(
-                    Math.max(targetTranslate - scrollVelocity, -maxTranslate),
+                targetTranslateRef.current = Math.min(
+                    Math.max(targetTranslateRef.current - scrollVelocity, -maxTranslateRef.current),
                     0
                 );
 
@@ -132,36 +157,43 @@ function Description() {
             }
         };
 
-        container?.addEventListener("touchstart", handleTouchStart);
-        container?.addEventListener("touchmove", handleTouchMove, { passive: false });
+        container.addEventListener("wheel", handleWheel, { passive: false });
+        container.addEventListener("touchstart", handleTouchStart);
+        container.addEventListener("touchmove", handleTouchMove, { passive: false });
 
         return () => {
-            container?.removeEventListener("wheel", handleWheel);
-            container?.removeEventListener("touchstart", handleTouchStart);
-            container?.removeEventListener("touchmove", handleTouchMove);
+            container.removeEventListener("wheel", handleWheel);
+            container.removeEventListener("touchstart", handleTouchStart);
+            container.removeEventListener("touchmove", handleTouchMove);
         };
-    }, [dimensions, isHorizontal, maxTranslate]);
+    }, [dimensions, isHorizontal, isInfoOpen]);
 
-    const handleItemClick = (index: number) => {
-        isClickMove = true;
-        targetTranslate =
+    // Définir handleItemClick comme useCallback pour éviter de recréer la fonction à chaque render
+    const handleItemClick = useCallback((index) => {
+        if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
+        
+        isClickMoveRef.current = true;
+        targetTranslateRef.current =
             -index * dimensions.itemSize +
             (dimensions.indicatorSize - dimensions.itemSize) / 2;
-        targetTranslate = Math.max(Math.min(targetTranslate, 0), -maxTranslate);
-    };
+        targetTranslateRef.current = Math.max(
+            Math.min(targetTranslateRef.current, 0), 
+            -maxTranslateRef.current
+        );
+    }, [dimensions, isInfoOpen]);
 
-    function lerp(start: number, end: number, factor: number) {
+    function lerp(start, end, factor) {
         return start + (end - start) * factor;
     }
 
     function getItemInIndicator() {
         const itemImages = document.querySelectorAll('.description-item img');
         itemImages.forEach((img) => {
-            (img as HTMLImageElement).style.opacity = '1';
+            img.style.opacity = '1';
         });
 
-        const indicatorStart = -currentTranslate;
-        const indicatorEnd = -currentTranslate + dimensions.indicatorSize;
+        const indicatorStart = -currentTranslateRef.current;
+        const indicatorEnd = -currentTranslateRef.current + dimensions.indicatorSize;
 
         let maxOverlap = 0;
         let selectedIndex = 0;
@@ -180,38 +212,51 @@ function Description() {
                 selectedIndex = index;
             }
         });
-        itemImages[selectedIndex].style.opacity = activeItemOpacity.toString();
+        
+        if (itemImages[selectedIndex]) {
+            itemImages[selectedIndex].style.opacity = activeItemOpacity.toString();
+        }
         return selectedIndex;
     }
 
-    function updatePreviewImage(index: number) {
-        if (currentImageIndex !== index) {
-            currentImageIndex = index;
+    function updatePreviewImage(index) {
+        if (currentImageIndexRef.current !== index) {
+            currentImageIndexRef.current = index;
             const targetItem = document.querySelectorAll('.description-item img')[index];
             const targetSrc = targetItem?.getAttribute('src');
-            previewImageRef.current?.setAttribute('src', targetSrc || '');
+            if (previewImageRef.current && targetSrc) {
+                previewImageRef.current.setAttribute('src', targetSrc);
+            }
         }
     }
 
     function animate() {
-        const lerpFactor = isClickMove ? 0.05 : 0.075;
-        currentTranslate = lerp(currentTranslate, targetTranslate, lerpFactor);
+        const lerpFactor = isClickMoveRef.current ? 0.05 : 0.075;
+        currentTranslateRef.current = lerp(
+            currentTranslateRef.current, 
+            targetTranslateRef.current, 
+            lerpFactor
+        );
 
-        if (Math.abs(currentTranslate - targetTranslate) > 0.01) {
+        if (Math.abs(currentTranslateRef.current - targetTranslateRef.current) > 0.01) {
             const transform = isHorizontal
-                ? `translateX(${currentTranslate}px)`
-                : `translateY(${currentTranslate}px)`;
-            itemsRef.current!.style.transform = transform;
+                ? `translateX(${currentTranslateRef.current}px)`
+                : `translateY(${currentTranslateRef.current}px)`;
+                
+            if (itemsRef.current) {
+                itemsRef.current.style.transform = transform;
+            }
 
             const activeIndex = getItemInIndicator();
             updatePreviewImage(activeIndex);
         } else {
-            isClickMove = false;
+            isClickMoveRef.current = false;
         }
 
-        requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
     }
 
+    // Animations GSAP
     useEffect(() => {
         gsap.fromTo(
             ".img-preview-description img",
@@ -239,11 +284,18 @@ function Description() {
             { y: "10vh" },
             { y: 0, duration: 0.5, ease: "power3.out" }
         );
+        
+        // Clean up animation frame when component unmounts
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+            }
+        };
     }, [associatedImages]);
 
     const navigate = useNavigate();
 
-    const handleBackClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const handleBackClick = (e) => {
         e.preventDefault();
 
         gsap.to(".img-preview-description img", {
@@ -269,20 +321,9 @@ function Description() {
         });
     };
 
-    const [isInfoOpen, setIsInfoOpen] = useState(false);
-
-    const toggleInfo = () => {
-        setIsInfoOpen(!isInfoOpen);
-    };
-
-    useEffect(() => {
-        if (!isInfoOpen) {
-            const itemElements = document.querySelectorAll('.description-item');
-            itemElements.forEach((item, index) => {
-                item.addEventListener('click', () => handleItemClick(index));
-            });
-        }
-    }, [isInfoOpen]);
+    const toggleInfo = useCallback(() => {
+        setIsInfoOpen(prev => !prev);
+    }, []);
 
     return (
         <div className="description-container" ref={containerRef}>
@@ -300,12 +341,12 @@ function Description() {
                 <div className="indicator" ref={indicatorRef}></div>
                 <div className="description-items" ref={itemsRef}>
                     {selectedImage && (
-                        <div className="description-item" onClick={() => handleItemClick(0)}>
+                        <div className="description-item" onClick={() => !isInfoOpen && handleItemClick(0)}>
                             <img src={selectedImage.src} alt={selectedImage.title} />
                         </div>
                     )}
                     {associatedImages.map((src, index) => (
-                        <div key={index} className="description-item" onClick={() => handleItemClick(index + 1)}>
+                        <div key={index} className="description-item" onClick={() => !isInfoOpen && handleItemClick(index + 1)}>
                             <img src={src} alt={`Associated image ${index + 1}`} />
                         </div>
                     ))}
