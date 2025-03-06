@@ -275,6 +275,15 @@ function Description() {
         setIsInfoOpen(!isInfoOpen);
     };
 
+    useEffect(() => {
+        if (!isInfoOpen) {
+            const itemElements = document.querySelectorAll('.description-item');
+            itemElements.forEach((item, index) => {
+                item.addEventListener('click', () => handleItemClick(index));
+            });
+        }
+    }, [isInfoOpen]);
+
     return (
         <div className="description-container" ref={containerRef}>
             <div className="img-preview-description">
