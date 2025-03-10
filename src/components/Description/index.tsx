@@ -94,7 +94,6 @@ function Description() {
         };
     }, [associatedImages]);
 
-    // Configuration initiale après dimensions mises à jour
     useEffect(() => {
         const itemElements = document.querySelectorAll('.description-item img');
         if (itemElements.length > 0) {
@@ -108,54 +107,50 @@ function Description() {
         }
     }, [dimensions]);
 
-    // Gestionnaires d'événements pour wheel/touch
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
         
         const handleWheel = (e) => {
-            if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
-            
+            if (isInfoOpen) return;
+        
             e.preventDefault();
             isClickMoveRef.current = false;
-
-            const delta = e.deltaY;
+        
+            const delta = isHorizontal ? e.deltaX : e.deltaY;
             const scrollVelocity = Math.min(Math.max(delta * 0.5, -20), 20);
-
+        
             targetTranslateRef.current = Math.min(
                 Math.max(targetTranslateRef.current - scrollVelocity, -maxTranslateRef.current),
                 0
             );
-        };
+        };        
 
-        let touchStartY = 0;
-        
-        const handleTouchStart = (e) => {
-            if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
-            
-            if (isHorizontal) {
-                touchStartY = e.touches[0].clientY;
-            }
-        };
+        let touchStart = 0;
 
-        const handleTouchMove = (e) => {
-            if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
-            
-            if (isHorizontal) {
-                const touchY = e.touches[0].clientY;
-                const deltaY = touchStartY - touchY;
+const handleTouchStart = (e) => {
+    if (isInfoOpen) return;
+    
+    touchStart = isHorizontal ? e.touches[0].clientX : e.touches[0].clientY;
+};
 
-                const scrollVelocity = Math.min(Math.max(deltaY * 0.5, -20), 20);
+const handleTouchMove = (e) => {
+    if (isInfoOpen) return;
+    
+    const touchCurrent = isHorizontal ? e.touches[0].clientX : e.touches[0].clientY;
+    const delta = touchStart - touchCurrent;
 
-                targetTranslateRef.current = Math.min(
-                    Math.max(targetTranslateRef.current - scrollVelocity, -maxTranslateRef.current),
-                    0
-                );
+    const scrollVelocity = Math.min(Math.max(delta * 0.5, -20), 20);
 
-                touchStartY = touchY;
-                e.preventDefault();
-            }
-        };
+    targetTranslateRef.current = Math.min(
+        Math.max(targetTranslateRef.current - scrollVelocity, -maxTranslateRef.current),
+        0
+    );
+
+    touchStart = touchCurrent;
+    e.preventDefault();
+};
+
 
         container.addEventListener("wheel", handleWheel, { passive: false });
         container.addEventListener("touchstart", handleTouchStart);
@@ -170,7 +165,7 @@ function Description() {
 
     // Définir handleItemClick comme useCallback pour éviter de recréer la fonction à chaque render
     const handleItemClick = useCallback((index) => {
-        if (isInfoOpen) return; // Ne pas réagir si l'info est ouverte
+        if (isInfoOpen) return;
         
         isClickMoveRef.current = true;
         targetTranslateRef.current =
@@ -324,6 +319,37 @@ function Description() {
     const toggleInfo = useCallback(() => {
         setIsInfoOpen(prev => !prev);
     }, []);
+
+    useEffect(() => {
+        if (isHorizontal) {
+            document.body.style.touchAction = "pan-x";
+    
+            const descriptionContainer = document.querySelector(".description-container") as HTMLElement;
+            const minimap = document.querySelector(".minimap") as HTMLElement;
+    
+            if (descriptionContainer) descriptionContainer.style.touchAction = "pan-x";
+            if (minimap) minimap.style.touchAction = "pan-x";
+        } else {
+            document.body.style.touchAction = "pan-y";
+    
+            const descriptionContainer = document.querySelector(".description-container") as HTMLElement;
+            const minimap = document.querySelector(".minimap") as HTMLElement;
+    
+            if (descriptionContainer) descriptionContainer.style.touchAction = "pan-y";
+            if (minimap) minimap.style.touchAction = "pan-y";
+        }
+    
+        return () => {
+            document.body.style.touchAction = "";
+    
+            const descriptionContainer = document.querySelector(".description-container") as HTMLElement;
+            const minimap = document.querySelector(".minimap") as HTMLElement;
+    
+            if (descriptionContainer) descriptionContainer.style.touchAction = "";
+            if (minimap) minimap.style.touchAction = "";
+        };
+    }, [isHorizontal]);  
+    
 
     return (
         <div className="description-container" ref={containerRef}>

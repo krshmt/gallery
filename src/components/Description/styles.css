@@ -72,12 +72,6 @@
     body {
         overflow: hidden;
     }
-    
-    .site-info{
-        top: 1.5em;
-        left: 50%;
-        transform: translateX(-50%);
-    }
 
     .minimap{
         top: auto;
