@@ -71,13 +71,8 @@
 @media (max-width : 900px) {
     body {
         overflow: hidden;
-        touch-action: none;
     }
-
-    .description-container{
-        touch-action: none;
-    }
-
+    
     .site-info{
         top: 1.5em;
         left: 50%;
@@ -91,7 +86,6 @@
         left: 50%;
         width: auto;
         height: 80px;
-        touch-action: none;
     }
 
     .indicator{
@@ -105,7 +99,6 @@
         flex-direction: row;
         width: max-content;
         height: 100%;
-        touch-action: none;
     }
 
     .description-item{
