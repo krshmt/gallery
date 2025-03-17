@@ -7,6 +7,7 @@ import Gallery from "./components/Gallery";
 import Description from "./components/Description";
 import Menu from "./components/header/menu";
 import About from "./components/About";
+import Contact from "./components/Contact/Index";
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/" element={<Gallery />} />
           <Route path="/description" element={<Description />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </AnimatePresence>
     </Router>
