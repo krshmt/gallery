@@ -7,14 +7,13 @@ function Contact() {
     return (
         <>
             <h2>Contact Form</h2>
-            <form 
-                method="post" 
-                name="Contact Form" 
+            <form
+                method="post"
+                name="Contact Form"
                 data-netlify="true"
+                action=""
             >
-                {/* Champ caché pour Netlify */}
                 <input type="hidden" name="form-name" value="Contact Form" />
-                
                 <p>
                     <label htmlFor="name">Name:</label>
                     <input type="text" name="name" id="name" required />
@@ -30,7 +29,7 @@ function Contact() {
                 <p>
                     <input type="submit" value="Submit" />
                 </p>
-            </form>            
+            </form>
         </>
     );
 }
