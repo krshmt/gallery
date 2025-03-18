@@ -11,9 +11,13 @@ function Contact() {
                 method="post"
                 name="Contact Form"
                 data-netlify="true"
+                data-netlify-honeypot="bot-field"
                 action=""
             >
                 <input type="hidden" name="form-name" value="Contact Form" />
+                <p hidden>
+                    <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
+                </p>
                 <p>
                     <label htmlFor="name">Name:</label>
                     <input type="text" name="name" id="name" required />
