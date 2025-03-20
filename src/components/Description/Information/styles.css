@@ -14,11 +14,13 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 3;
     padding: 0 25%;
+    pointer-events: none;
 }
 
 .information-popup.open {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .information-content {
@@ -45,4 +47,31 @@
 
 .title_information, .information-content{
     color: black;
+}
+
+@media (max-width: 1000px) {
+    .information-popup {
+        padding: 0 10%;
+    }
+}
+
+@media (max-width: 600px) {
+    .information-content{
+        flex-direction: column;
+        margin-bottom: 2rem;
+    }
+    .information-content > * {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .information-content > * {
+        font-size: 0.5rem;
+        line-height: 1rem;
+    }
+
+    .title_information{
+        font-size: 1rem;    
+    }
 }

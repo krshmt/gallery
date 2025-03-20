@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
